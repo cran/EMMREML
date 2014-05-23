@@ -17,17 +17,10 @@ function(y, X, Zlist, Klist){
  
   minimfunctionouter<-function(weights=rep(1/lz, lz)){
     weights=weights/sum(weights)
-    Klistweighted<-Klist
-  for (i in 1:lz){Klistweighted[[i]]<-weights[i]*Klist[[i]]}
+    ZKZt<-matrix(0,nrow=n,ncol=n)
+  for (i in 1:lz){ZKZt<-ZKZt+weights[i]*tcrossprod(Zlist[[i]]%*%Klist[[i]],Zlist[[i]])}
 
- K<-.bdiag(Klistweighted)
- 
-  K<-as.matrix(K)
-  
-
-  ZK<-Z%*%K
   offset<-log(n)
-  ZKZt<-tcrossprod(ZK,Z)
   ZKZtandoffset<-ZKZt+offset*spI
   SZKZtSandoffset<-{S%*%ZKZtandoffset}%*%S
   
@@ -42,17 +35,26 @@ function(y, X, Zlist, Klist){
   }
   weights<-optim(par=rep(1/lz, lz), fn=minimfunctionouter, 
       method = "L-BFGS-B", lower = rep(0, lz), upper = rep(1,lz))$par
-  
+  Z <- c()
+    for (i in 1:lz) {
+        Z <- cbind(Z, Zlist[[i]])
+    }
+
   weights<-weights/sum(weights)
-   Klistweighted<-Klist
-  for (i in 1:lz){Klistweighted[[i]]<-weights[i]*Klist[[i]]}
- K<-.bdiag(Klistweighted)
- K<-as.matrix(K)
-  
-  ZK<-Z%*%K
+  ZKZt<-matrix(0,nrow=n,ncol=n)
+  Klistweighted<-Klist
+  for (i in 1:lz){
+  	Klistweighted[[i]] <- weights[i] * Klist[[i]]
+  	ZKZt<-ZKZt+weights[i]*tcrossprod(Zlist[[i]]%*%Klist[[i]],Zlist[[i]])
+  	
+  	}
+K <- .bdiag(Klistweighted)
+    #K <- as.matrix(K)
+    ZK <- as.matrix(Z %*% K)
+
   offset<-log(n)
-  ZKZt<-tcrossprod(ZK,Z)
   ZKZtandoffset<-ZKZt+offset*spI
+
   SZKZtSandoffset<-{S%*%ZKZtandoffset}%*%S
   
   svdSZKZtSandspI<-eigen(SZKZtSandoffset, symmetric=TRUE)

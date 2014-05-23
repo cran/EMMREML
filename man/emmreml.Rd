@@ -4,7 +4,7 @@
 Solver for Gaussian mixed model with known covariance structure.
 }
 \description{
-This function estimates the parameters of the model \deqn{y=X\beta+Z u+ e} where \eqn{y} is the $n$ vector of response variable, \eqn{X} is a \eqn{n x q} known design matrix of fixed effects,  \eqn{Z} is a \eqn{n x l} known design matrix of random effects, \eqn{\beta} is \eqn{n x 1} vector of fixed effects coefficients and  \eqn{u} and \eqn{e} are independent variables with \eqn{N_l(0, \sigma^2_u K)} and \eqn{N_n(0, \sigma^2_e I_n)} correspondingly. It also produces the BLUPs for the random effects.
+This function estimates the parameters of the model \deqn{y=X\beta+Z u+ e} where \eqn{y} is the \eqn{n} vector of response variable, \eqn{X} is a \eqn{n x q} known design matrix of fixed effects,  \eqn{Z} is a \eqn{n x l} known design matrix of random effects, \eqn{\beta} is \eqn{q x 1} vector of fixed effects coefficients and  \eqn{u} and \eqn{e} are independent variables with \eqn{N_l(0, \sigma^2_u K)} and \eqn{N_n(0, \sigma^2_e I_n)} correspondingly. It also produces the BLUPs for the random effects.
 }
 \usage{
 emmreml(y, X, Z, K)
@@ -30,9 +30,6 @@ emmreml(y, X, Z, K)
 \item{betahat}{BLUEs for \eqn{\beta}}
 \item{uhat}{BLUPs for \eqn{u}}
 
-}
-\author{
-Deniz Akdemir
 }
 
 \examples{

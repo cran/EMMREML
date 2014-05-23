@@ -4,10 +4,8 @@
 Function to fit Gaussian mixed model with multiple mixed effects with known covariances.
 }
 \description{
-This function is a wrapper for the emmreml to fit Gaussian mixed model with multiple mixed effects with known covariances. The model fitted is \deqn{y=X\beta+Z_1 u_1 +Z_2 u_2+...Z_k u_k+ e} where \eqn{y} is the $n$ vector of response variable, \eqn{X} is a \eqn{n x q} known design matrix of fixed effects,  \eqn{Z_j} is a \eqn{n x l_j} known design matrix of random effects for \eqn{j=1,2,...,k}, \eqn{\beta} is \eqn{n x 1} vector of fixed effects coefficients and  \eqn{U=(u^t_1, u^t_2,..., u^t_k)^t} and \eqn{e} are independent variables with \eqn{N_L(0, blockdiag(\sigma^2_{u_1} K_1,\sigma^2_{u_2} K_2,...,\sigma^2_{u_k} K_k))} and \eqn{N_n(0, \sigma^2_e I_n)} correspondingly. It also produces the BLUPs for the L dimensional random effects \eqn{U}.
-
-The variance parameters for random effects are estimated as  \eqn{(\hat{w}_1, \hat{w}_2,...,\hat{w}_k)*\hat{\sigma^2_u}} where \eqn{w=(w_1,w_2,..., w_k)} are the kernel weights.
-
+This function is a wrapper for the emmreml to fit Gaussian mixed model with multiple mixed effects with known covariances. The model fitted is \eqn{y=X\beta+Z_1 u_1 +Z_2 u_2+...Z_k u_k+ e} where \eqn{y} is the \eqn{n} vector of response variable, \eqn{X} is a \eqn{n x q} known design matrix of fixed effects,  \eqn{Z_j} is a \eqn{n x l_j} known design matrix of random effects for \eqn{j=1,2,...,k}, \eqn{\beta} is \eqn{n x 1} vector of fixed effects coefficients and  \eqn{U=(u^t_1, u^t_2,..., u^t_k)^t} and \eqn{e} are independent variables with \eqn{N_L(0, blockdiag(\sigma^2_{u_1} K_1,\sigma^2_{u_2} K_2,...,\sigma^2_{u_k} K_k))} and \eqn{N_n(0, \sigma^2_e I_n)} correspondingly. It also produces the BLUPs for the \eqn{L=l_1+l_2+...+l_k} dimensional random effect \eqn{U}.
+The variance parameters for random effects are estimated as \eqn{(\hat{w}_1, \hat{w}_2,...,\hat{w}_k)*\hat{\sigma^2_u}} where \eqn{w=(w_1,w_2,..., w_k)} are the kernel weights.
 }
 \usage{
 emmremlMultiKernel(y, X, Zlist, Klist)
@@ -34,9 +32,7 @@ list of known relationship matrices of  dimensions \eqn{l_1 x l_1},...,\eqn{l_k 
 \item{uhat}{BLUPs for \eqn{u}}
 \item{weights}{Estimates of kernel weights}
 }
-\author{
-Deniz Akdemir
-}
+
 \examples{
 
 ####example

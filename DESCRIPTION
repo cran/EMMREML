@@ -1,14 +1,14 @@
 Package: EMMREML
 Type: Package
 Title: Fitting mixed models with known covariance structures.
-Version: 1.0
-Date: 2014-02-24
-Author: Deniz Akdemir
+Version: 2.0
+Date: 2014-05-23
+Author: Deniz Akdemir, Okeke Uche Godfrey
 Maintainer: Deniz Akdemir <deniz.akdemir.work@gmail.com>
 Depends: Matrix
-Description: The main functions are emmreml, and emmremlMultiKernel. emmreml solves a mixed model with known covariance structure. emmremlMultiKernel is a wrapper for emmreml to handle multiple random components with known covariance structures.
+Description: The main functions are emmreml, and emmremlMultiKernel.emmreml solves a mixed model with known covariance structure using the EMMA algorithm . emmremlMultiKernel is a wrapper for emmreml to handle multiple random components with known covariance structures. The function emmremlMultivariate solves a multivariate gaussian mixed model with known covariance structure using the ECM algorithm.
 License: GPL-2
-Packaged: 2014-02-25 23:01:05 UTC; denizakdemir
+Packaged: 2014-05-24 01:28:07 UTC; denizakdemir
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-02-26 00:46:54
+Date/Publication: 2014-05-24 08:12:49

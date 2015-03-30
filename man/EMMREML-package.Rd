@@ -6,14 +6,13 @@
 Fitting mixed models with known covariance structures.
 }
 \description{
-The main functions are emmreml, and emmremlMultiKernel.emmreml solves a mixed model with known covariance structure using the EMMA algorithm in Kang et.al. (2008). emmremlMultiKernel is a wrapper for emmreml to handle multiple random components with known covariance structures. The function emmremlMultivariate solves a multivariate gaussian mixed model with known covariance structure using the ECM algorithm in Zhou and Stephens (2012).
-}
+The main functions are emmreml, and emmremlMultiKernel.emmreml solves a mixed model with known covariance structure using the EMMA algorithm in Kang et.al. (2008). emmremlMultiKernel is a wrapper for emmreml to handle multiple random components with known covariance structures. The function emmremlMultivariate solves a multivariate gaussian mixed model with known covariance structure using the ECM algorithm in Zhou and Stephens (2012).}
 \details{
 \tabular{ll}{
 Package: \tab EMMREML\cr
 Type: \tab Package\cr
-Version: \tab 2.0\cr
-Date: \tab 2014-05-23\cr
+Version: \tab 3.0\cr
+Date: \tab 2014-03-30\cr
 License: \tab GPL-2\cr
 }
 }

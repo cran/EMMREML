@@ -1,5 +1,5 @@
 emmreml <-
-function(y,X,Z,K){
+function(y,X,Z,K,varbetahat=TRUE,varuhat=TRUE, PEVuhat=TRUE, test=T){
   q=dim(X)[2]
   
   n=length(y)
@@ -23,16 +23,53 @@ function(y,X,Z,K){
   deltahat<-optimout$minimum
  
   Hinvhat<-solve(ZKZt+deltahat*spI)
+ 
   XtHinvhat<-crossprod(X,Hinvhat)
   betahat<-solve(XtHinvhat%*%X,XtHinvhat%*%y)
   ehat<-(y-{X%*%betahat})
   Hinvhatehat<-Hinvhat%*%ehat
   
   sigmausqhat<-sum(eta^2/{lambda+deltahat})/(n-q)
-  
+  Vinv<-(1/sigmausqhat)*Hinvhat
   sigmaesqhat<-deltahat*sigmausqhat
   
   uhat<-crossprod(ZK,Hinvhatehat)
   
-  return(list(Vu=sigmausqhat,Ve=sigmaesqhat,betahat=betahat,uhat=uhat))
+  loglik<-sum(dnorm(chol(Vinv)%*%ehat, log=T))
+  
+  ####VAR U
+  if (varuhat){
+  			
+  			P<-Vinv-Vinv%*%X%*%solve(crossprod(X,Vinv%*%X), crossprod(X,Vinv))
+  			varuhat<-sigmausqhat^2*crossprod(ZK,P)%*%ZK
+}
+  
+   if (PEVuhat){
+  			
+  			if (!exists("P")){P<-Vinv-Vinv%*%X%*%solve(crossprod(X,Vinv%*%X), crossprod(X,Vinv))}
+  			PEVuhat<-sigmausqhat*K-varuhat
+}
+
+   #varbeta
+  
+   if (varbetahat){
+  	varbetahat<-solve(crossprod(X,Vinv%*%X))
+  }
+  if (test){
+  	Xsqtestu<-uhat^2/diag(varuhat)
+	puhat<-pchisq(Xsqtestu,df=1, lower.tail=F,log.p=F)
+	p.adjust.M <- p.adjust.methods
+	p.adjuhat    <- sapply(p.adjust.M, function(meth) p.adjust(puhat, meth))
+	Xsqtestbeta<-betahat^2/diag(varbetahat)
+	pbetahat<-pchisq(Xsqtestbeta,df=1, lower.tail=F,log.p=F)
+	p.adjbetahat    <- sapply(p.adjust.M, function(meth) p.adjust(pbetahat, meth))
+  }
+  if (!exists("Xsqtestbeta")){Xsqtestbeta<-c()}
+  if (!exists("pvalbeta")){pvalbeta<-c()}
+  if (!exists("Xsqtestu")){Xsqtestu<-c()}
+  if (!exists("p.adjuhat")){p.adjuhat<-c()}
+  if (!exists("varuhat")){varuhat<-c()}
+  if (!exists("varbeta")){varubeta<-c()}
+  if (!exists("PEVuhat")){PEVuhat<-c()}
+  return(list(Vu=sigmausqhat,Ve=sigmaesqhat,betahat=betahat,uhat=uhat, Xsqtestbeta=Xsqtestbeta,pvalbeta=p.adjbetahat,Xsqtestu=Xsqtestu,pvalu=p.adjuhat,varuhat=diag(varuhat), varbetahat=diag(varbetahat), PEVuhat=diag(PEVuhat), loglik=loglik))
 }

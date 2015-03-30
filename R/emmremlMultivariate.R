@@ -1,5 +1,6 @@
 
-emmremlMultivariate<-function(Y,X, Z, K,tolpar=1e-04, tolparinv=1e-04){
+emmremlMultivariate<-function(Y,X, Z, K,varBhat=TRUE,varGhat=TRUE, PEVGhat=TRUE, test=T,tolpar=1e-06, tolparinv=1e-06){
+	
    Z<-t(Z)
  ECM1<-function(ytl, xtl, Vgt,Vet,Bt, deltal){
  Vlt=deltal*Vgt+Vet
@@ -36,7 +37,6 @@ Vefunc<-function(l){
   ZKZt<-Z%*%KZt
    
  eigZKZt = eigen(ZKZt)
-  eigZKZt$values<-eigZKZt$values
  n<-nrow(ZKZt)
   d<-nrow(Y)
  Yt = Y%*%eigZKZt$vectors
@@ -58,14 +58,64 @@ Vetm1<-Vet
 	Vgt<-Reduce('+', listVgts)
 	listVets <- lapply(1:n,Vefunc)
 	Vet<-Reduce('+', listVets)
-	
-	if(abs(sum(diag(Vet - Vetm1)))/abs(sum(diag(Vetm1)))<tolpar){break}
+	convnum<-abs(sum(diag(Vet - Vetm1)))/abs(sum(diag(Vetm1)))
+	convcond<-tryCatch({convnum<tolpar}, error=function(e){return(FALSE)})
+	if(convcond){break}
 }
 
-HobsInve<-solve(kronecker(ZKZt,Vgt)+kronecker(diag(n),Vet)+tolparinv*diag(d*n), matrix(Y - Bt%*%X,ncol=1, byrow=F))
-gpred<-kronecker(K,Vgt)%*%(kronecker(t(Z),diag(d)))%*%HobsInve
+
+HobsInv<-solve(kronecker(ZKZt,Vgt)+kronecker(diag(n),Vet)+tolparinv*diag(d*n))
+ehat<-matrix(Y - Bt%*%X,ncol=1, byrow=F)
+HobsInve<-HobsInv%*%ehat
+varvecG<-kronecker(K,Vgt)
+gpred<-varvecG%*%(kronecker(t(Z),diag(d)))%*%HobsInve
 Gpred<-matrix(gpred, nrow=nrow(Y), byrow=F)
 colnames(Gpred)<-rownames(K)
-return(list(Bhat=Bt,Vg=Vgt,Ve=Vet, Gpred=Gpred))
+
+
+
+  loglik<-sum(dnorm(chol(HobsInv)%*%ehat, log=T))
+  		Xforvec<-(kronecker(t(X),diag(d)))
+  		Zforvec<-(kronecker((Z),diag(d)))
+  		ZKforvec<-Zforvec%*%varvecG
+  ####VAR U
+  if (varGhat){
+  	
+  			P<-HobsInv-HobsInv%*%Xforvec%*%solve(crossprod(Xforvec,HobsInv%*%Xforvec), crossprod(Xforvec,HobsInv))
+  			varGhat<-crossprod(ZKforvec,P)%*%ZKforvec
+}
+  
+   if (PEVGhat){
+  			
+  			if (!exists("P")){P<-HobsInv-HobsInv%*%Xforvec%*%solve(crossprod(Xforvec,HobsInv%*%Xforvec), crossprod(Xforvec,HobsInv))}
+  			PEVGhat<-varvecG-varGhat
+}
+
+   #varbeta
+  
+   if (varBhat){
+  	varBhat<-solve(crossprod(Xforvec,HobsInv%*%Xforvec))
+  }
+  if (test){
+  	XsqtestG<-matrix(Gpred,ncol=1, byrow=F)^2/diag(varGhat)
+  	XsqtestG<-matrix(XsqtestG, ncol=nrow(Y), byrow=T)
+  	XsqtestG<-matrix(XsqtestG,ncol=1, byrow=T)
+	pGhat<-pchisq(XsqtestG,df=1, lower.tail=F,log.p=F)
+	p.adjust.M <- p.adjust.methods
+	p.adjGhat    <- sapply(p.adjust.M, function(meth) p.adjust(pGhat, meth))
+	XsqtestB<-matrix(Bt,ncol=1, byrow=F)^2/diag(varBhat)
+	pBhat<-pchisq(XsqtestB,df=1, lower.tail=F,log.p=F)
+	p.adjBhat    <- sapply(p.adjust.M, function(meth) p.adjust(pBhat, meth))
+  }
+  if (!exists("XsqtestB")){XsqtestB<-c()}
+  if (!exists("p.adjBhat")){p.adjBhat<-c()}
+  if (!exists("XsqtestG")){XsqtestG<-c()}
+  if (!exists("p.adjGhat")){p.adjGhat<-c()}
+  if (!exists("varGhat")){varGhat<-c()}
+  if (!exists("varBhat")){varBhat<-c()}
+  if (!exists("PEVGhat")){PEVGhat<-c()}
+
+
+return(list(Bhat=Bt,Vg=Vgt,Ve=Vet, Gpred=Gpred, XsqtestB=XsqtestB,pvalB=p.adjBhat,XsqtestG=XsqtestG,pvalG=p.adjGhat,varGhat=diag(varGhat), varBhat=diag(varBhat), PEVGhat=diag(PEVGhat), loglik=loglik))
 }
 }

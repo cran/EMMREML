@@ -1,5 +1,5 @@
 emmremlMultiKernel <-
-function(y, X, Zlist, Klist){
+function(y, X, Zlist, Klist,varbetahat=TRUE,varuhat=TRUE, PEVuhat=TRUE, test=T){
 	q=dim(X)[2]
   	n=length(y)
    	lz<-length(Zlist)
@@ -77,7 +77,48 @@ K <- .bdiag(Klistweighted)
   sigmausqhat<-sum(eta^2/{lambda+deltahat})/(n-q)
   sigmaesqhat<-deltahat*sigmausqhat
   uhat<-crossprod(ZK,Hinvhatehat)
+  Vinv<-(1/sigmausqhat)*Hinvhat
+  namesuhat<-c()
+  for (i in 1:length(Klist)){namesuhat<-c(namesuhat,paste(paste("K",i,sep="_"),colnames(Klist[[i]]),sep=""))}
   
-  return(list(Vu=sigmausqhat,Ve=sigmaesqhat,betahat=betahat,uhat=uhat, weights=weights))
+  loglik<-sum(dnorm(chol(Vinv)%*%ehat, log=T))
+  
+  ####VAR U
+  if (varuhat){
+  			
+  			P<-Vinv-Vinv%*%X%*%solve(crossprod(X,Vinv%*%X), crossprod(X,Vinv))
+  			varuhat<-sigmausqhat^2*crossprod(ZK,P)%*%ZK
+}
+  
+   if (PEVuhat){
+  			
+  			if (!exists("P")){P<-Vinv-Vinv%*%X%*%solve(crossprod(X,Vinv%*%X), crossprod(X,Vinv))}
+  			PEVuhat<-sigmausqhat*K-varuhat
+}
+
+   #varbeta
+  
+   if (varbetahat){
+  	varbetahat<-solve(crossprod(X,Vinv%*%X))
+  }
+  if (test){
+  	Xsqtestu<-uhat^2/diag(varuhat)
+	puhat<-pchisq(Xsqtestu,df=1, lower.tail=F,log.p=F)
+	p.adjust.M <- p.adjust.methods
+	p.adjuhat    <- sapply(p.adjust.M, function(meth) p.adjust(puhat, meth))
+	Xsqtestbeta<-betahat^2/diag(varbetahat)
+	pbetahat<-pchisq(Xsqtestbeta,df=1, lower.tail=F,log.p=F)
+	p.adjbetahat    <- sapply(p.adjust.M, function(meth) p.adjust(pbetahat, meth))
+  }
+  if (!exists("Xsqtestbeta")){Xsqtestbeta<-c()}
+  if (!exists("p.adjbetahat")){p.adjbetahat<-c()}
+  if (!exists("Xsqtestu")){Xsqtestu<-c()}
+  if (!exists("p.adjuhat")){p.adjuhat<-c()}
+  if (!exists("varuhat")){varuhat<-c()}
+  if (!exists("varbeta")){varubeta<-c()}
+  if (!exists("PEVuhat")){PEVuhat<-c()}
+uhat<-as.numeric(uhat)
+names(uhat)<-namesuhat
+  return(list(Vu=sigmausqhat,Ve=sigmaesqhat,betahat=betahat,uhat=uhat, weights=weights, Xsqtestbeta=Xsqtestbeta,pvalbeta=p.adjbetahat,Xsqtestu=Xsqtestu,pvalu=p.adjuhat,varuhat=diag(varuhat), varbetahat=diag(varbetahat), PEVuhat=diag(PEVuhat), loglik=loglik))
 
 }

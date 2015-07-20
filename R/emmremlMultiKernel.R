@@ -1,5 +1,5 @@
 emmremlMultiKernel <-
-function(y, X, Zlist, Klist,varbetahat=TRUE,varuhat=TRUE, PEVuhat=TRUE, test=T){
+function(y, X, Zlist, Klist,varbetahat=FALSE,varuhat=FALSE, PEVuhat=FALSE, test=FALSE){
 	q=dim(X)[2]
   	n=length(y)
    	lz<-length(Zlist)
@@ -81,8 +81,8 @@ K <- .bdiag(Klistweighted)
   namesuhat<-c()
   for (i in 1:length(Klist)){namesuhat<-c(namesuhat,paste(paste("K",i,sep="_"),colnames(Klist[[i]]),sep=""))}
   
-  loglik<-sum(dnorm(chol(Vinv)%*%ehat, log=T))
-  
+  df <- n - q
+  loglik <-  -0.5 * (optimout$objective + df + df * log(2 * pi/df))
   ####VAR U
   if (varuhat){
   			

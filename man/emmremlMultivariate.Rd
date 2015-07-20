@@ -7,8 +7,8 @@ Function to fit multivariate Gaussian mixed model with with known covariance str
 This function estimates the parameters of the model \deqn{Y=BX+GZ+ E} where \eqn{Y} is the \eqn{d x n} matrix of response variable, \eqn{X} is a \eqn{q x n} known design matrix of fixed effects,  \eqn{Z} is a \eqn{l x n} known design matrix of random effects, \eqn{B} is \eqn{d x q} matrix of fixed effects coefficients and  \eqn{G} and \eqn{E} are independent matrix variate variables with \eqn{N_{d x l}(0, V_G, K)} and \eqn{N_{d x n}(0, V_E, I_n)} correspondingly. It also produces the BLUPs for the random effects G and some other statistics.
 }
 \usage{
-emmremlMultivariate(Y, X, Z, K,varBhat=TRUE,varGhat=TRUE,
-PEVGhat=TRUE, test=T,tolpar=1e-06, tolparinv=1e-06)
+emmremlMultivariate(Y, X, Z, K,varBhat=FALSE,varGhat=FALSE,
+PEVGhat=FALSE, test=FALSE,tolpar=1e-06, tolparinv=1e-06)
 }
 \arguments{
   \item{Y}{\eqn{d x n} matrix of response variable
@@ -45,7 +45,6 @@ PEVGhat=TRUE, test=T,tolpar=1e-06, tolparinv=1e-06)
 \item{varGhat}{Large sample variance for BLUPs.}
 \item{varBhat}{Large sample variance for the elements of B.}
 \item{PEVGhat}{Prediction error variance estimates for the BLUPs.}
-\item{loglik}{loglikelihood for the model.}
 }
 
 

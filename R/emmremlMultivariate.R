@@ -1,5 +1,5 @@
 
-emmremlMultivariate<-function(Y,X, Z, K,varBhat=TRUE,varGhat=TRUE, PEVGhat=TRUE, test=T,tolpar=1e-06, tolparinv=1e-06){
+emmremlMultivariate<-function(Y,X, Z, K,varBhat=FALSE,varGhat=FALSE, PEVGhat=FALSE, test=FALSE,tolpar=1e-06, tolparinv=1e-06){
 	
    Z<-t(Z)
  ECM1<-function(ytl, xtl, Vgt,Vet,Bt, deltal){
@@ -72,9 +72,6 @@ gpred<-varvecG%*%(kronecker(t(Z),diag(d)))%*%HobsInve
 Gpred<-matrix(gpred, nrow=nrow(Y), byrow=F)
 colnames(Gpred)<-rownames(K)
 
-
-
-  loglik<-sum(dnorm(chol(HobsInv)%*%ehat, log=T))
   		Xforvec<-(kronecker(t(X),diag(d)))
   		Zforvec<-(kronecker((Z),diag(d)))
   		ZKforvec<-Zforvec%*%varvecG
@@ -116,6 +113,6 @@ colnames(Gpred)<-rownames(K)
   if (!exists("PEVGhat")){PEVGhat<-c()}
 
 
-return(list(Bhat=Bt,Vg=Vgt,Ve=Vet, Gpred=Gpred, XsqtestB=XsqtestB,pvalB=p.adjBhat,XsqtestG=XsqtestG,pvalG=p.adjGhat,varGhat=diag(varGhat), varBhat=diag(varBhat), PEVGhat=diag(PEVGhat), loglik=loglik))
+return(list(Bhat=Bt,Vg=Vgt,Ve=Vet, Gpred=Gpred, XsqtestB=XsqtestB,pvalB=p.adjBhat,XsqtestG=XsqtestG,pvalG=p.adjGhat,varGhat=diag(varGhat), varBhat=diag(varBhat), PEVGhat=diag(PEVGhat)))
 }
 }

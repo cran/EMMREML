@@ -8,7 +8,8 @@ This function is a wrapper for the emmreml to fit Gaussian mixed model with mult
 The variance parameters for random effects are estimated as \eqn{(\hat{w}_1, \hat{w}_2,...,\hat{w}_k)*\hat{\sigma^2_u}} where \eqn{w=(w_1,w_2,..., w_k)} are the kernel weights. The function also provides some useful statistics like large sample estimates of variances and PEV.
 }
 \usage{
-emmremlMultiKernel(y, X, Zlist, Klist,varbetahat=TRUE,varuhat=TRUE, PEVuhat=TRUE, test=T)
+emmremlMultiKernel(y, X, Zlist, Klist,
+varbetahat=FALSE,varuhat=FALSE, PEVuhat=FALSE, test=FALSE)
 }
 \arguments{
   \item{y}{

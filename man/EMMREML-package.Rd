@@ -11,8 +11,8 @@ The main functions are emmreml, and emmremlMultiKernel.emmreml solves a mixed mo
 \tabular{ll}{
 Package: \tab EMMREML\cr
 Type: \tab Package\cr
-Version: \tab 3.0\cr
-Date: \tab 2014-03-30\cr
+Version: \tab 3.1\cr
+Date: \tab 2015-07-20\cr
 License: \tab GPL-2\cr
 }
 }

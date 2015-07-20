@@ -1,5 +1,5 @@
 emmreml <-
-function(y,X,Z,K,varbetahat=TRUE,varuhat=TRUE, PEVuhat=TRUE, test=T){
+function(y,X,Z,K,varbetahat=FALSE,varuhat=FALSE, PEVuhat=FALSE, test=FALSE){
   q=dim(X)[2]
   
   n=length(y)
@@ -35,8 +35,8 @@ function(y,X,Z,K,varbetahat=TRUE,varuhat=TRUE, PEVuhat=TRUE, test=T){
   
   uhat<-crossprod(ZK,Hinvhatehat)
   
-  loglik<-sum(dnorm(chol(Vinv)%*%ehat, log=T))
-  
+  df <- n - q
+  loglik <-  -0.5 * (optimout$objective + df + df * log(2 * pi/df))
   ####VAR U
   if (varuhat){
   			
@@ -64,10 +64,12 @@ function(y,X,Z,K,varbetahat=TRUE,varuhat=TRUE, PEVuhat=TRUE, test=T){
 	pbetahat<-pchisq(Xsqtestbeta,df=1, lower.tail=F,log.p=F)
 	p.adjbetahat    <- sapply(p.adjust.M, function(meth) p.adjust(pbetahat, meth))
   }
+
   if (!exists("Xsqtestbeta")){Xsqtestbeta<-c()}
   if (!exists("pvalbeta")){pvalbeta<-c()}
   if (!exists("Xsqtestu")){Xsqtestu<-c()}
   if (!exists("p.adjuhat")){p.adjuhat<-c()}
+   if (!exists("p.adjbetahat")){p.adjbetahat<-c()}
   if (!exists("varuhat")){varuhat<-c()}
   if (!exists("varbeta")){varubeta<-c()}
   if (!exists("PEVuhat")){PEVuhat<-c()}

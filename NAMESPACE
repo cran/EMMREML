@@ -1,2 +1,9 @@
 exportPattern("^[[:alpha:]]+")
 import(Matrix)
+importFrom(stats, cov)
+importFrom(stats, optimize)
+importFrom(stats, optim)
+importFrom(stats, pchisq)
+importFrom(stats, p.adjust)
+importFrom(stats, p.adjust.methods)
+
